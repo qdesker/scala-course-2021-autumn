@@ -40,7 +40,7 @@ object Homework :
 
   object `Boolean Operators` :
 
-    def not(b: Boolean): Boolean = ???
+    def not(b: Boolean): Boolean = ??? // here is my greatest solution
 
     def and(left: Boolean, right: Boolean): Boolean = ???
 
