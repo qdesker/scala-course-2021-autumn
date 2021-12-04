@@ -40,26 +40,57 @@ object Homework :
 
   object `Boolean Operators` :
 
-    def not(b: Boolean): Boolean = ???
+    def not(b: Boolean): Boolean = if b then false else true
 
-    def and(left: Boolean, right: Boolean): Boolean = ???
+    def and(left: Boolean, right: => Boolean): Boolean = if left then right else false
 
-    def or(left: Boolean, right: Boolean): Boolean = ???
+    def or(left: Boolean, right: => Boolean): Boolean = if left then true else right
 
   end `Boolean Operators`
 
   object `Fermat Numbers` :
 
-    val multiplication: (BigInt, BigInt) => BigInt = ???
+    val multiplication: (BigInt, BigInt) => BigInt = (first, second) => {
 
-    val power: (BigInt, BigInt) => BigInt = ???
+      @tailrec
+      def mul(first: BigInt, second: BigInt, acc: BigInt): BigInt =
+        if first == 0
+        then acc
+        else mul(first - 1, second, acc + second)
 
-    val fermatNumber: Int => BigInt = ???
+      mul(first, second, 0)
+    }
+
+    val power: (BigInt, BigInt) => BigInt = (first, second) => {
+
+      @tailrec
+      def pow(first: BigInt, second: BigInt, acc: BigInt): BigInt =
+        if second == 0 then acc
+        else pow(first, second - 1, multiplication(acc, first))
+
+      pow(first, second, 1)
+    }
+
+    val fermatNumber: Int => BigInt = (n) => power(2, power(2, n)) + 1
 
   end `Fermat Numbers`
 
   object `Look-and-say Sequence` :
-    val lookAndSaySequenceElement: Int => BigInt = ???
+    val lookAndSaySequenceElement: Int => BigInt = (n: Int) => {
+      val regex = """(\d)(\1*)""".r
+
+      @tailrec
+      def lookAndSay(n: Int, acc: String): String =
+        if n == 0
+        then acc
+        else lookAndSay(
+          n - 1,
+          regex.findAllMatchIn(acc).map(m => m.group(0).length.toString +
+            m.group(1)).mkString)
+
+      BigInt(lookAndSay(n, "1"))
+    }
+
 
   end `Look-and-say Sequence`
 
