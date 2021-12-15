@@ -9,7 +9,7 @@ object HomeworkSpecification extends Properties("Homework"):
 
   include(BooleanOperatorsSpecification)
   include(FermatNumbersSpecification)
-  include(LookAndAaSequenceSpecification)
+  include(LookAndSaySequenceSpecification)
 
 end HomeworkSpecification
 
@@ -23,14 +23,22 @@ object BooleanOperatorsSpecification extends Properties("Boolean Operators"):
   property("and") = forAll { (pair: (Boolean, Boolean)) =>
     val (left, right) = pair
     
-    and(left, right) == left && right
+    and(left, right) == (left && right)
+  }
+
+  property("and with Exception") = forAll { () =>
+    !and(false, throw new Exception())
   }
 
   property("or") = forAll { (pair: (Boolean, Boolean)) =>
     val (left, right) = pair
     
-    or(left, right) == left || right
-  }   
+    or(left, right) == (left || right)
+  }
+
+  property("or with Exception") = forAll { () =>
+    or(true, throw new Exception())
+  }
 
 end BooleanOperatorsSpecification
 
@@ -47,17 +55,30 @@ object FermatNumbersSpecification extends Properties("Fermat Numbers"):
   }
 
   property("fermatNumber") = forAll { (n: Int) =>
-    fermatNumber(n) == Math.pow(2, Math.pow(2, 2)) + 1
+    fermatNumber(n) == BigInt(2).pow(Math.pow(2, n).intValue()) + 1
   }  
 
 end FermatNumbersSpecification
 
-object LookAndAaSequenceSpecification extends Properties("Look-and-say Sequence"):
+object LookAndSaySequenceSpecification extends Properties("Look-and-say Sequence"):
   import `Look-and-say Sequence`._
   import arbitraries.given Arbitrary[Int]
 
-  property("fermatNumber") = forAll { (n: Int) =>
-    lookAndSaySequenceElement(n) == 42
+  property("LookAndSaySequence") = forAll { (n: Int) =>
+    val lookAndSaySequence: Vector[BigInt] = (Vector(
+      1,
+      11,
+      21,
+      1211,
+      111221,
+      312211,
+      13112221,
+      1113213211,
+      BigInt("31131211131221"),
+      BigInt("13211311123113112211"),
+      BigInt("11131221133112132113212221")))
+
+    lookAndSaySequenceElement(n) == lookAndSaySequence(n)
   }  
 
-end LookAndAaSequenceSpecification
+end LookAndSaySequenceSpecification
