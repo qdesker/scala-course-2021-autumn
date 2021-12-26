@@ -9,10 +9,7 @@ import utils._
 
 object HomeworkSpecification extends Properties("Homework"):
   import arbitraries.{given Arbitrary[Int], given Arbitrary[Rational]}
-  // we need this property because of computer representation of numbers with floating point
-  // and it's accuracy in calculations.
-  val SMALL_NUMBER = 0.00000001
-  
+
   property("throw exception due to zero denominator") = forAll { (numer: Int) ⇒
     throws(classOf[IllegalArgumentException]) {
       Rational(numer, 0)
@@ -57,20 +54,23 @@ object HomeworkSpecification extends Properties("Homework"):
   }
 
   property("addition") = forAll { (left: Rational, right: Rational) =>
-    abs((left + right).toDouble - (left.toDouble + right.toDouble)) <= SMALL_NUMBER
+    left + right == Rational(left.numer * right.denom + left.denom * right.numer, left.denom * right.denom)
   }
 
   property("subtraction") = forAll { (left: Rational, right: Rational) =>
-    abs((left - right).toDouble - (left.toDouble - right.toDouble)) <= SMALL_NUMBER
+    left - right == Rational(left.numer * right.denom - left.denom * right.numer, left.denom * right.denom)
   }
 
   property("multiplication") = forAll { (left: Rational, right: Rational) =>
-    abs((left * right).toDouble - (left.toDouble * right.toDouble)) <= SMALL_NUMBER
+    left * right == Rational(left.numer * right.numer, left.denom * right.denom)
   }
 
   property("division") = forAll { (left: Rational, numer: Int, denom: Int) =>
     val right = Rational(if numer == 0 then 1 else numer, abs(denom) + 1)
-    abs((left / right).toDouble - (left.toDouble / right.toDouble)) <= SMALL_NUMBER
+    val denomResult = left.denom * right.numer
+    if denomResult < 0
+      then (left / right) == Rational(-(left.numer * right.denom), abs(denomResult))
+    else (left / right) == Rational(left.numer * right.denom, denomResult)
   }
 
   property("division by zero") = forAll { (left: Rational, int: Int) =>

@@ -58,8 +58,6 @@ object Homework:
       then Rational(-(this.numer * that.denom), abs(newDenom))
       else Rational(this.numer * that.denom, this.denom * that.numer)
 
-    def toDouble: Double = this.numer.toDouble / this.denom.toDouble
-
     override def toString: String = s"${this.numer}/${this.denom}"
 
     private def gcd(a: Int, b: Int): Int =
@@ -71,6 +69,9 @@ object Homework:
       case that: Rational => ((this.numer == that.numer) && (this.denom == that.denom))
       case _ => false
     }
+
+    override def hashCode(): Int =
+      numer * 7 + denom * 13
 
   end Rational
 
